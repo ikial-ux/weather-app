@@ -1,6 +1,7 @@
+import apiKey from './config/config.js'; 
+
 function getWeather() {
     const city = document.getElementById('city').value;
-    const apiKey = 'REDACTED';
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
     fetch(url)
@@ -29,3 +30,4 @@ function getWeather() {
             document.getElementById('not-found').style.display = 'block'; 
         });
 }
+document.getElementById('search-btn').addEventListener('click', getWeather);
