@@ -15,6 +15,13 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.i {
+    text-align: left;
 }
 
 input[type="text"] {
@@ -40,16 +47,36 @@ button:hover {
 
 .weather-info {
     margin-top: 20px;
+    text-align: center; /* Ensures weather info is centered */
+}
+
+.weather-info i {
+    font-size: 30px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.weather-info img {
+    vertical-align: middle;
+    margin-right: 10px;
 }
 
 .not-found {
     display: none;
     margin-top: 20px;
-    color: red;
     text-align: center;
 }
 
 .not-found img {
-    width: 150px;
+    width: 100px;
     margin-bottom: 10px;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+.weather-container h1 {
+    margin-bottom: 15px; /* Ensure there's space between title and icon */
 }
