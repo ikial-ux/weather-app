@@ -1,29 +1,20 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Página Web</title>
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Bienvenido a mi página web</h1>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Sobre mí</a></li>
-            <li><a href="#">Contacto</a></li>
-        </ul>
-    </nav>
-    <main>
-        <section>
-            <h2>Bienvenido</h2>
-            <p>Esta es una página de ejemplo.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 Mi Página Web</p>
-    </footer>
+
+    <div class="weather-container">
+        <h1>Weather App</h1>
+        <input type="text" id="city" placeholder="Enter city name">
+        <button onclick="getWeather()">Get Weather</button>
+        <div class="weather-info" id="weather-info"></div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
