@@ -80,3 +80,17 @@ button:hover {
 .weather-container h1 {
     margin-bottom: 15px; /* Ensure there's space between title and icon */
 }
+
+#location-btn {
+    padding: 10px;
+    background-color: #2196F3;
+    margin-left: 5px;
+}
+
+#location-btn:hover {
+    background-color: #1976D2;
+}
+
+.fa-location-arrow {
+    font-size: 14px;
+}
