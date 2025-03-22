@@ -47,23 +47,28 @@ async function getWeather() {
 }
 
 async function fetchWeatherData(params) {
+    showLoader();
+    
     try {
-        const response = await fetch(`/api/weather?${new URLSearchParams(params)}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        const [currentResponse, forecastResponse] = await Promise.all([
+            fetch(`/api/weather?${new URLSearchParams(params)}`),
+            fetch(`/api/weather?${new URLSearchParams({...params, type: 'forecast'})}`)
+        ]);
 
-        const data = await response.json();
-        
-        if (data.cod === 200) {
-            displayWeatherData(data);
+        const currentData = await currentResponse.json();
+        const forecastData = await forecastResponse.json();
+
+        if (currentData.cod === 200 && forecastData.cod === '200') {
+            displayWeatherData(currentData);
+            displayForecast(forecastData);
         } else {
-            throw new Error(data.message || 'Unknown error occurred');
+            throw new Error(currentData.message || forecastData.message);
         }
     } catch (error) {
         console.error('Fetch error:', error);
         showError(error.message || 'Failed to fetch weather data');
+    } finally {
+        hideLoader();
     }
 }
 
@@ -79,6 +84,33 @@ function displayWeatherData(data) {
         <p>Humidity: ${data.main.humidity}%</p>
         <p>Wind Speed: ${data.wind.speed} m/s</p>
     `;
+}
+
+function displayForecast(forecastData) {
+    const forecastContainer = document.getElementById('forecast-container');
+    forecastContainer.innerHTML = '';
+    
+    const dailyForecast = forecastData.list.reduce((acc, item) => {
+        const date = new Date(item.dt * 1000).toLocaleDateString();
+        if (!acc[date]) {
+            acc[date] = item;
+        }
+        return acc;
+    }, {});
+
+    Object.values(dailyForecast).slice(0, 5).forEach(day => {
+        const date = new Date(day.dt * 1000);
+        const dayElement = document.createElement('div');
+        dayElement.className = 'forecast-card';
+        dayElement.innerHTML = `
+            <div class="forecast-day">${date.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+            <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png" 
+                 alt="${day.weather[0].description}">
+            <div class="forecast-temp">${Math.round(day.main.temp)}°C</div>
+            <div class="forecast-description">${day.weather[0].main}</div>
+        `;
+        forecastContainer.appendChild(dayElement);
+    });
 }
 
 function handleGeolocationError(error) {
@@ -102,10 +134,19 @@ function handleGeolocationError(error) {
 
 function clearDisplay() {
     document.getElementById('weather-info').innerHTML = '';
+    document.getElementById('forecast-container').innerHTML = '';
     document.getElementById('not-found').style.display = 'none';
 }
 
 function showError(message) {
     document.getElementById('not-found').innerHTML = `<p>${message}</p>`;
     document.getElementById('not-found').style.display = 'block';
+}
+
+function showLoader() {
+    document.getElementById('loader').style.display = 'block';
+}
+
+function hideLoader() {
+    document.getElementById('loader').style.display = 'none';
 }

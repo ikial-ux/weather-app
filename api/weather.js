@@ -1,12 +1,14 @@
 // api/weather.js
 export default async (req, res) => {
-    const { city, lat, lon } = req.query;
+    const { city, lat, lon, type = 'weather' } = req.query;
     
     try {
-        const url = new URL('https://api.openweathermap.org/data/2.5/weather');
+        const endpoint = type === 'forecast' ? 'forecast' : 'weather';
+        const url = new URL(`https://api.openweathermap.org/data/2.5/${endpoint}`);
+        
         url.searchParams.set('appid', process.env.API_KEY);
         url.searchParams.set('units', 'metric');
-        
+
         if (city) {
             url.searchParams.set('q', city);
         } else {
@@ -17,11 +19,7 @@ export default async (req, res) => {
         const response = await fetch(url);
         const data = await response.json();
         
-        if (data.cod !== 200) {
-            return res.status(400).json(data);
-        }
-        
-        res.status(200).json(data);
+        res.status(response.status).json(data);
     } catch (error) {
         console.error('Proxy error:', error);
         res.status(500).json({ 
