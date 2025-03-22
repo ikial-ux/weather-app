@@ -1,118 +1,74 @@
-import apiKey from './config/config.js';
-
+// script.js
 document.addEventListener('DOMContentLoaded', () => {
     const locationBtn = document.getElementById('location-btn');
     const searchBtn = document.getElementById('search-btn');
     
-    // Event listeners
     searchBtn.addEventListener('click', getWeather);
     locationBtn.addEventListener('click', getLocationWeather);
     
-    // Enter key handler
     document.getElementById('city').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') getWeather();
     });
 });
 
-// Improved location weather function
-function getLocationWeather() {
-    // Clear previous results and errors
-    document.getElementById('weather-info').innerHTML = '';
-    document.getElementById('not-found').style.display = 'none';
-
-    if (navigator.geolocation) {
-        const geoOptions = {
-            enableHighAccuracy: true,
-            timeout: 10000,  // 10-second timeout
-            maximumAge: 60000  // Cache for 1 minute
-        };
-
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                const { latitude, longitude } = position.coords;
-                getWeatherByCoords(latitude, longitude);
-            },
-            error => {
-                let errorMessage = 'Failed to get location. Please try again.';
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMessage = 'Location access denied. Enable permissions in browser settings.';
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMessage = 'Location information is unavailable.';
-                        break;
-                    case error.TIMEOUT:
-                        errorMessage = 'Location request timed out. Please try again.';
-                        break;
+async function getLocationWeather() {
+    clearDisplay();
+    
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+                resolve,
+                reject,
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
                 }
-                
-                document.getElementById('not-found').innerHTML = `
-                    <p>${errorMessage}</p>
-                `;
-                document.getElementById('not-found').style.display = 'block';
-            },
-            geoOptions
-        );
-    } else {
-        document.getElementById('not-found').innerHTML = `
-            <p>Geolocation is not supported by your browser.</p>
-        `;
-        document.getElementById('not-found').style.display = 'block';
+            );
+        });
+
+        const { latitude, longitude } = position.coords;
+        await fetchWeatherData({ lat: latitude, lon: longitude });
+    } catch (error) {
+        handleGeolocationError(error);
     }
 }
 
-// Enhanced weather fetching with error handling
-function getWeather() {
+async function getWeather() {
     const city = document.getElementById('city').value.trim();
-    if (city === '') {
-        document.getElementById('not-found').innerHTML = `
-            <p>Please enter a city name.</p>
-        `;
-        document.getElementById('not-found').style.display = 'block';
+    clearDisplay();
+
+    if (!city) {
+        showError('Please enter a city name');
         return;
     }
-    
-    // Clear previous results
-    document.getElementById('weather-info').innerHTML = '';
-    document.getElementById('not-found').style.display = 'none';
 
-    fetchWeather(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`);
+    await fetchWeatherData({ city });
 }
 
-function getWeatherByCoords(lat, lon) {
-    fetchWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+async function fetchWeatherData(params) {
+    try {
+        const response = await fetch(`/api/weather?${new URLSearchParams(params)}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.cod === 200) {
+            displayWeatherData(data);
+        } else {
+            throw new Error(data.message || 'Unknown error occurred');
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        showError(error.message || 'Failed to fetch weather data');
+    }
 }
 
-// Improved fetch function with error handling
-function fetchWeather(url) {
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.cod === 200) {
-                displayWeatherData(data);
-            } else {
-                throw new Error(data.message || 'Unknown error occurred');
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            document.getElementById('weather-info').innerHTML = '';
-            document.getElementById('not-found').innerHTML = `
-                <p>${error.message || 'Failed to fetch weather data'}</p>
-            `;
-            document.getElementById('not-found').style.display = 'block';
-        });
-}
-
-// Separate display function
 function displayWeatherData(data) {
-    const iconCode = data.weather[0].icon;
-    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+    const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
 
     document.getElementById('weather-info').innerHTML = `
         <h3>${data.name}, ${data.sys.country}</h3>
@@ -123,5 +79,33 @@ function displayWeatherData(data) {
         <p>Humidity: ${data.main.humidity}%</p>
         <p>Wind Speed: ${data.wind.speed} m/s</p>
     `;
+}
+
+function handleGeolocationError(error) {
+    console.error('Geolocation error:', error);
+    let message = 'Failed to get location. Please try again.';
+    
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            message = 'Location access denied. Enable permissions in browser settings.';
+            break;
+        case error.POSITION_UNAVAILABLE:
+            message = 'Location information is unavailable.';
+            break;
+        case error.TIMEOUT:
+            message = 'Location request timed out. Please try again.';
+            break;
+    }
+    
+    showError(message);
+}
+
+function clearDisplay() {
+    document.getElementById('weather-info').innerHTML = '';
     document.getElementById('not-found').style.display = 'none';
+}
+
+function showError(message) {
+    document.getElementById('not-found').innerHTML = `<p>${message}</p>`;
+    document.getElementById('not-found').style.display = 'block';
 }
