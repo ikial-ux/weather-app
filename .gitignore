@@ -1,3 +1,5 @@
 # Ignore the config folder
 /config/config/config.js
 .vercel
+.env.local
+ggg

@@ -1,4 +1,3 @@
-// script.js
 document.addEventListener('DOMContentLoaded', () => {
     const locationBtn = document.getElementById('location-btn');
     const searchBtn = document.getElementById('search-btn');
@@ -74,6 +73,8 @@ async function fetchWeatherData(params) {
 
 function displayWeatherData(data) {
     const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+    
+    setWeatherTheme(data.weather[0].main);
 
     document.getElementById('weather-info').innerHTML = `
         <h3>${data.name}, ${data.sys.country}</h3>
@@ -136,6 +137,7 @@ function clearDisplay() {
     document.getElementById('weather-info').innerHTML = '';
     document.getElementById('forecast-container').innerHTML = '';
     document.getElementById('not-found').style.display = 'none';
+    setWeatherTheme('Clear'); 
 }
 
 function showError(message) {
@@ -150,3 +152,16 @@ function showLoader() {
 function hideLoader() {
     document.getElementById('loader').style.display = 'none';
 }
+
+function setWeatherTheme(condition) {
+    const themes = {
+      Clear: 'var(--sunny-gradient)',
+      Clouds: 'var(--cloudy-gradient)',
+      Rain: 'var(--rainy-gradient)',
+      Thunderstorm: 'linear-gradient(135deg, #2c3e50, #3498db)',
+      Snow: 'linear-gradient(135deg, #e6f4f1, #b9d7ea)',
+      Drizzle: 'linear-gradient(135deg, #6dd5ed, #2193b0)'
+    };
+  
+    document.body.style.background = themes[condition] || themes.Clear;
+  }
