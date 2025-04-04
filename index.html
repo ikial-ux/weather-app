@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +9,20 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <div class="weather-container">
         <h1>Weather App</h1>
-        <input type="text" id="city" placeholder="Enter city name">
-        <div class="button-container">
-            <button id="search-btn">Search</button>
-            <button id="location-btn" title="Use current location">
-                <i class="fas fa-location-arrow"></i>
-            </button>
+        <div class="search-section">
+            <div class="weather-background" id="weather-background"></div>
+            <input type="text" id="city" placeholder="Enter city name">
+            <div class="button-container">
+                <button id="search-btn">Search</button>
+                <button id="location-btn" title="Use current location">
+                    <i class="fas fa-location-arrow"></i>
+                </button>
+            </div>
         </div>
         <div class="weather-info" id="weather-info"></div>
         <div class="not-found" id="not-found" style="display: none;">
@@ -33,4 +38,5 @@
 
     <script type="module" src="script.js"></script>
 </body>
+
 </html>

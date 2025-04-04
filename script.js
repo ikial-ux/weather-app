@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const locationBtn = document.getElementById('location-btn');
     const searchBtn = document.getElementById('search-btn');
-    
+
     searchBtn.addEventListener('click', getWeather);
     locationBtn.addEventListener('click', getLocationWeather);
-    
+
     document.getElementById('city').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') getWeather();
     });
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function getLocationWeather() {
     clearDisplay();
-    
+
     try {
         const position = await new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(
@@ -47,17 +47,18 @@ async function getWeather() {
 
 async function fetchWeatherData(params) {
     showLoader();
-    
+
     try {
         const [currentResponse, forecastResponse] = await Promise.all([
             fetch(`/api/weather?${new URLSearchParams(params)}`),
-            fetch(`/api/weather?${new URLSearchParams({...params, type: 'forecast'})}`)
+            fetch(`/api/weather?${new URLSearchParams({ ...params, type: 'forecast' })}`)
         ]);
 
         const currentData = await currentResponse.json();
         const forecastData = await forecastResponse.json();
 
         if (currentData.cod === 200 && forecastData.cod === '200') {
+            setWeatherTheme(currentData.weather[0].main); // Añade esta línea
             displayWeatherData(currentData);
             displayForecast(forecastData);
         } else {
@@ -73,8 +74,9 @@ async function fetchWeatherData(params) {
 
 function displayWeatherData(data) {
     const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
-    
-    setWeatherTheme(data.weather[0].main);
+
+
+    //setWeatherTheme(data.weather[0].main);
 
     document.getElementById('weather-info').innerHTML = `
         <h3>${data.name}, ${data.sys.country}</h3>
@@ -90,7 +92,7 @@ function displayWeatherData(data) {
 function displayForecast(forecastData) {
     const forecastContainer = document.getElementById('forecast-container');
     forecastContainer.innerHTML = '';
-    
+
     const dailyForecast = forecastData.list.reduce((acc, item) => {
         const date = new Date(item.dt * 1000).toLocaleDateString();
         if (!acc[date]) {
@@ -117,8 +119,8 @@ function displayForecast(forecastData) {
 function handleGeolocationError(error) {
     console.error('Geolocation error:', error);
     let message = 'Failed to get location. Please try again.';
-    
-    switch(error.code) {
+
+    switch (error.code) {
         case error.PERMISSION_DENIED:
             message = 'Location access denied. Enable permissions in browser settings.';
             break;
@@ -129,7 +131,7 @@ function handleGeolocationError(error) {
             message = 'Location request timed out. Please try again.';
             break;
     }
-    
+
     showError(message);
 }
 
@@ -137,7 +139,8 @@ function clearDisplay() {
     document.getElementById('weather-info').innerHTML = '';
     document.getElementById('forecast-container').innerHTML = '';
     document.getElementById('not-found').style.display = 'none';
-    setWeatherTheme('Clear'); 
+    document.getElementById('weather-background').style.display = 'none'; 
+    setWeatherTheme('Clear');
 }
 
 function showError(message) {
@@ -155,13 +158,36 @@ function hideLoader() {
 
 function setWeatherTheme(condition) {
     const themes = {
-      Clear: 'var(--sunny-gradient)',
-      Clouds: 'var(--cloudy-gradient)',
-      Rain: 'var(--rainy-gradient)',
-      Thunderstorm: 'linear-gradient(135deg, #2c3e50, #3498db)',
-      Snow: 'linear-gradient(135deg, #e6f4f1, #b9d7ea)',
-      Drizzle: 'linear-gradient(135deg, #6dd5ed, #2193b0)'
+        Clear: {
+            gradient: 'var(--sunny-gradient)',
+            image: 'url("images/sunny.jpg")'
+        },
+        Clouds: {
+            gradient: 'var(--cloudy-gradient)',
+            image: 'url("images/cloudy.jpg")'
+        },
+        Rain: {
+            gradient: 'var(--rainy-gradient)',
+            image: 'url("images/rainy.jpg")'
+        },
+        Thunderstorm: {
+            gradient: 'linear-gradient(135deg, #2c3e50, #3498db)',
+            image: 'url("images/storm.jpg")'
+        },
+        Snow: {
+            gradient: 'linear-gradient(135deg, #e6f4f1, #b9d7ea)',
+            image: 'url("images/snowy.jpg")'
+        },
+        Drizzle: {
+            gradient: 'linear-gradient(135deg, #6dd5ed, #2193b0)',
+            image: 'url("images/rainy.jpg")'
+        }
     };
-  
-    document.body.style.background = themes[condition] || themes.Clear;
-  }
+
+    const theme = themes[condition] || themes.Clear;
+    document.body.style.background = theme.gradient;
+
+    const backgroundElement = document.getElementById('weather-background');
+    backgroundElement.style.backgroundImage = theme.image;
+    backgroundElement.style.display = 'block';
+}
