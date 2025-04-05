@@ -286,6 +286,35 @@ input[type="text"] {
   margin: 1rem 0;
 }
 
+.header-section {
+  position: relative;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 14px;
+  overflow: hidden; /* Para contener el fondo */
+}
+
+.weather-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5;
+  z-index: 0;
+  transition: all 0.5s ease;
+}
+
+/* Asegura que el contenido esté sobre el fondo */
+.header-section h1, 
+.search-section {
+  position: relative;
+  z-index: 1;
+}
+
+
 @media (max-width: 480px) {
   .weather-container {
     padding: 1.2rem;
@@ -353,5 +382,9 @@ input[type="text"] {
 
   .not-found {
     padding: 1.2rem;
+  }
+  .header-section {
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
   }
 }

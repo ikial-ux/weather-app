@@ -139,7 +139,7 @@ function clearDisplay() {
     document.getElementById('weather-info').innerHTML = '';
     document.getElementById('forecast-container').innerHTML = '';
     document.getElementById('not-found').style.display = 'none';
-    document.getElementById('weather-background').style.display = 'none'; 
+    document.getElementById('weather-background').style.display = 'none';
     setWeatherTheme('Clear');
 }
 
@@ -172,7 +172,7 @@ function setWeatherTheme(condition) {
         },
         Thunderstorm: {
             gradient: 'linear-gradient(135deg, #2c3e50, #3498db)',
-            image: 'url("images/storm.png")'
+            image: 'url("images/stormy.png")'
         },
         Snow: {
             gradient: 'linear-gradient(135deg, #e6f4f1, #b9d7ea)',
@@ -182,6 +182,7 @@ function setWeatherTheme(condition) {
             gradient: 'linear-gradient(135deg, #6dd5ed, #2193b0)',
             image: 'url("images/rainy.png")'
         }
+
     };
 
     const theme = themes[condition] || themes.Clear;
@@ -190,4 +191,7 @@ function setWeatherTheme(condition) {
     const backgroundElement = document.getElementById('weather-background');
     backgroundElement.style.backgroundImage = theme.image;
     backgroundElement.style.display = 'block';
+
+    const bgElement = document.getElementById('weather-background');
+    bgElement.style.opacity = condition === 'Clear' ? '0.4' : '0.6';
 }
