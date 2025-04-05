@@ -160,27 +160,27 @@ function setWeatherTheme(condition) {
     const themes = {
         Clear: {
             gradient: 'var(--sunny-gradient)',
-            image: 'url("images/sunny.jpg")'
+            image: 'url("images/sunny.png")'
         },
         Clouds: {
             gradient: 'var(--cloudy-gradient)',
-            image: 'url("images/cloudy.jpg")'
+            image: 'url("images/cloudy.png")'
         },
         Rain: {
             gradient: 'var(--rainy-gradient)',
-            image: 'url("images/rainy.jpg")'
+            image: 'url("images/rainy.png")'
         },
         Thunderstorm: {
             gradient: 'linear-gradient(135deg, #2c3e50, #3498db)',
-            image: 'url("images/storm.jpg")'
+            image: 'url("images/storm.png")'
         },
         Snow: {
             gradient: 'linear-gradient(135deg, #e6f4f1, #b9d7ea)',
-            image: 'url("images/snowy.jpg")'
+            image: 'url("images/snowy.png")'
         },
         Drizzle: {
             gradient: 'linear-gradient(135deg, #6dd5ed, #2193b0)',
-            image: 'url("images/rainy.jpg")'
+            image: 'url("images/rainy.png")'
         }
     };
 
