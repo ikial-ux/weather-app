@@ -315,76 +315,82 @@ input[type="text"] {
 }
 
 
+/* Añadir al final del media query (max-width: 480px) */
 @media (max-width: 480px) {
+  /* ... (código existente) ... */
+
+  /* Nuevos estilos para el slider */
   .weather-container {
-    padding: 1.2rem;
-    border-radius: 14px;
-    margin: 0 10px;
-  }
-
-  .weather-container h1 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-  }
-
-  input[type="text"] {
-    padding: 0.7rem 0.8rem;
-    font-size: 0.95rem;
-  }
-
-  .button-container {
+    height: 100vh;
+    padding: 15px;
+    margin: 0;
+    border-radius: 0;
+    display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    margin: 1.2rem 0;
-  }
-
-  button {
-    width: 100%;
-    padding: 0.9rem;
-    justify-content: center;
-  }
-
-  #location-btn {
-    width: 100%;
-    height: auto;
-  }
-
-  .weather-info {
-    margin: 1.5rem 0;
-  }
-
-  .weather-info img {
-    width: 80px;
-    height: 80px;
-  }
-
-  .weather-info h3 {
-    font-size: 1.5rem;
-  }
-
-  .weather-info p {
-    font-size: 1.1rem;
   }
 
   .forecast-container {
-    grid-auto-flow: row;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 0.8rem;
-    padding: 1rem 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    flex: 1;
+    min-height: 120px;
   }
 
   .forecast-card {
-    min-width: 90px;
-    padding: 0.8rem;
+    min-width: 85px;
+    flex-shrink: 0;
+    padding: 10px;
+    scroll-snap-align: center;
+  }
+
+  /* Ajustar botones para móvil */
+  .button-container {
+    flex-direction: row;
+    gap: 10px;
+    margin: 15px 0;
+  }
+
+  #search-btn,
+  #location-btn {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 12px !important;
+  }
+
+  #search-btn::after,
+  #location-btn::after {
+    content: none;
+  }
+
+  /* Ajustar alturas para evitar scroll */
+  .header-section {
+    flex-shrink: 0;
+  }
+
+  .weather-info {
+    flex-shrink: 0;
+    margin: 10px 0;
   }
 
   .not-found {
-    padding: 1.2rem;
+    margin: 10px 0;
+    padding: 10px;
   }
-  .header-section {
-      padding-bottom: 1rem;
-      margin-bottom: 1rem;
+
+  #loader {
+    margin: 10px 0;
+  }
+
+  /* Reducir tamaños de texto */
+  .weather-info h3 {
+    font-size: 1.4rem;
+  }
+
+  .weather-info p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
   }
 }
