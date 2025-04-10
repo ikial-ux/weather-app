@@ -1,10 +1,15 @@
 {
     "version": 2,
-    "public": "www",   
-    "rewrites": [
+    "builds": [
       {
-        "source": "/api/(.*)",
-        "destination": "/api/weather" 
+        "src": "www/index.html",
+        "use": "@vercel/static"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "www/index.html"
       }
     ]
   }
