@@ -16,19 +16,21 @@
     ],
     "routes": [
       {
-        "src": "/",
-        "dest": "www/index.html"
-      },
-      {
         "src": "/styles.css",
-        "dest": "www/styles.css"
+        "dest": "www/styles.css",
+        "headers": {
+          "Content-Type": "text/css"
+        }
       },
       {
         "src": "/script.js",
-        "dest": "www/script.js"
+        "dest": "www/script.js",
+        "headers": {
+          "Content-Type": "application/javascript"
+        }
       },
       {
-        "src": "/(.*)", 
+        "src": "/(.*)",
         "dest": "www/index.html"
       }
     ]
