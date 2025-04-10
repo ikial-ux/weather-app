@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "public": "www",   
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "/api/weather" 
+      }
+    ]
+  }
