@@ -1,30 +1,26 @@
-// api/weather.js
-export default async (req, res) => {
-    const { city, lat, lon, type = 'weather' } = req.query;
-    
-    try {
-        const endpoint = type === 'forecast' ? 'forecast' : 'weather';
-        const url = new URL(`https://api.openweathermap.org/data/2.5/${endpoint}`);
-        
-        url.searchParams.set('appid', process.env.API_KEY);
-        url.searchParams.set('units', 'metric');
+import { NextResponse } from 'next/server';
 
-        if (city) {
-            url.searchParams.set('q', city);
-        } else {
-            url.searchParams.set('lat', lat);
-            url.searchParams.set('lon', lon);
-        }
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const params = Object.fromEntries(searchParams.entries());
+  const API_KEY = process.env.OPENWEATHER_API_KEY;
 
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        res.status(response.status).json(data);
-    } catch (error) {
-        console.error('Proxy error:', error);
-        res.status(500).json({ 
-            cod: 500,
-            message: 'Internal server error' 
-        });
-    }
-};
+  // Construye la URL para OpenWeatherMap
+  const url = new URL(`https://api.openweathermap.org/data/2.5/${params.type === 'forecast' ? 'forecast' : 'weather'}`);
+  
+  // Añade parámetros
+  url.searchParams.append('appid', API_KEY);
+  url.searchParams.append('units', 'metric');
+  if (params.q) url.searchParams.append('q', params.q);
+  if (params.lat) url.searchParams.append('lat', params.lat);
+  if (params.lon) url.searchParams.append('lon', params.lon);
+  if (params.type === 'forecast') url.searchParams.append('cnt', '5');
+
+  try {
+    const response = await fetch(url.toString());
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
+  }
+}
