@@ -47,18 +47,22 @@ async function getWeather() {
 
 async function fetchWeatherData(params) {
     showLoader();
-
+    
     try {
+        // Cambia estas URLs para que apunten a tu endpoint en Vercel
         const [currentResponse, forecastResponse] = await Promise.all([
-            fetch(`/api/weather?${new URLSearchParams(params)}`),
-            fetch(`/api/weather?${new URLSearchParams({ ...params, type: 'forecast' })}`)
+            fetch(`/api/weather?${new URLSearchParams(params)}`),  // Ahora usa tu proxy
+            fetch(`/api/weather?${new URLSearchParams({ 
+                ...params, 
+                type: 'forecast'  // Parámetro para el pronóstico
+            })}`)
         ]);
 
         const currentData = await currentResponse.json();
         const forecastData = await forecastResponse.json();
 
         if (currentData.cod === 200 && forecastData.cod === '200') {
-            setWeatherTheme(currentData.weather[0].main); // Añade esta línea
+            setWeatherTheme(currentData.weather[0].main);
             displayWeatherData(currentData);
             displayForecast(forecastData);
         } else {
