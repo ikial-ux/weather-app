@@ -2,3 +2,5 @@
 /config/config/config.js
 .vercel
 .env.local
+.node_modules
+.android
