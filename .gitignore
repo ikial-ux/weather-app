@@ -1,9 +1,20 @@
-# Ignore the config folder
-/config/config/config.js
+# Entornos locales
+.env*
 .vercel
-.env.local
-.node_modules
-.android
-node_modules
-android
+.vscode/
+
+# Dependencias
 node_modules/
+android/
+ios/
+.android/
+.gradle/
+build/
+dist/
+
+# Config local o temporal
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
