@@ -201,6 +201,7 @@ function setWeatherTheme(condition) {
         },
         Snow: {
             gradient: 'linear-gradient(135deg, #e6f4f1, #b9d7ea)',
+            gradient: 'var(--snowy-gradient)',
             image: 'url("images/snowy.png")'
         },
         Drizzle: {
@@ -221,27 +222,61 @@ function setWeatherTheme(condition) {
 
     const rainOverlay = document.querySelector('.rain-overlay');
     if (condition === 'Rain') {
-      createRainDrops(150);  
-      rainOverlay.style.display = 'block';
+        createRainDrops(150);
+        rainOverlay.style.display = 'block';
     } else {
-      rainOverlay.style.display = 'none';
+        rainOverlay.style.display = 'none';
+    }
+
+    if (condition === 'Snow') {
+        addSnowAnimation();
+    } else {
+        removeSnowAnimation();
     }
 }
 
 function createRainDrops(numDrops = 100) {
     const rainOverlay = document.querySelector('.rain-overlay');
     rainOverlay.innerHTML = "";
-  
+
     for (let i = 0; i < numDrops; i++) {
-      const drop = document.createElement('div');
-      drop.classList.add('raindrop');
-      
-      drop.style.left = Math.random() * 100 + '%';
-      const duration = Math.random() * 0.5 + 0.5;
-      drop.style.animationDuration = duration + 's';
-      drop.style.animationDelay = Math.random() * 2 + 's';
-      
-      rainOverlay.appendChild(drop);
+        const drop = document.createElement('div');
+        drop.classList.add('raindrop');
+
+        drop.style.left = Math.random() * 100 + '%';
+        const duration = Math.random() * 0.5 + 0.5;
+        drop.style.animationDuration = duration + 's';
+        drop.style.animationDelay = Math.random() * 2 + 's';
+
+        rainOverlay.appendChild(drop);
     }
-  }
-  
+}
+
+function addSnowAnimation() {
+    if (document.querySelector('.snowflakes')) return;
+
+    const snowContainer = document.createElement('div');
+    snowContainer.classList.add('snowflakes');
+
+    for (let i = 0; i < 20; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.textContent = '❄';
+
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDuration = (5 + Math.random() * 10) + 's';
+        snowflake.style.animationDelay = Math.random() * 10 + 's';
+        snowflake.style.fontSize = (10 + Math.random() * 20) + 'px';
+
+        snowContainer.appendChild(snowflake);
+    }
+
+    document.body.appendChild(snowContainer);
+}
+
+function removeSnowAnimation() {
+    const snowContainer = document.querySelector('.snowflakes');
+    if (snowContainer) {
+        snowContainer.parentNode.removeChild(snowContainer);
+    }
+}
