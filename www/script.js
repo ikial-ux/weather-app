@@ -163,12 +163,13 @@ function clearDisplay() {
     document.getElementById('weather-info').innerHTML = '';
     document.getElementById('forecast-container').innerHTML = '';
     document.getElementById('not-found').style.display = 'none';
-    document.getElementById('weather-background').style.display = 'none';
-    document.getElementById('weather-info').style.display = 'none';
-    document.getElementById('forecast-container').style.display = 'none';
-    document.querySelector('.weather-container').classList.remove('expanded');
-    setWeatherTheme('Clear');
+
+    // Solo ocultar el fondo, sin cambiar el tema
+    const bgElement = document.getElementById('weather-background');
+    bgElement.style.display = 'none';
+    bgElement.style.backgroundImage = '';
 }
+
 
 function showError(message) {
     document.getElementById('not-found').innerHTML = `<p>${message}</p>`;
