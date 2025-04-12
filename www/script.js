@@ -83,6 +83,8 @@ async function fetchWeatherData(params) {
 function displayWeatherData(data) {
     const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
 
+    console.log('Clima detectado:', data.weather[0].main);
+
     setWeatherTheme(data.weather[0].main);
 
     document.getElementById('weather-info').innerHTML = `
@@ -185,33 +187,58 @@ function setWeatherTheme(condition) {
     const themes = {
         Clear: {
             gradient: 'var(--sunny-gradient)',
+            backgroundImagePath: 'background/sunny_background.png',
             image: 'url("images/sunny.png")'
         },
         Clouds: {
             gradient: 'var(--cloudy-gradient)',
+            backgroundImagePath: 'background/cloud_background.png',
             image: 'url("images/cloudy.png")'
         },
         Rain: {
             gradient: 'var(--rainy-gradient)',
+            backgroundImagePath: 'background/rain_background.png',
             image: 'url("images/rainy.png")'
         },
         Thunderstorm: {
             gradient: 'linear-gradient(135deg, #2c3e50, #3498db)',
+            backgroundImagePath: 'background/storm_background.png',
             image: 'url("images/stormy.png")'
         },
         Snow: {
-            gradient: 'linear-gradient(135deg, #e6f4f1, #b9d7ea)',
             gradient: 'var(--snowy-gradient)',
-            image: 'url("images/snowy.png")'
+            backgroundImagePath: 'background/snow_background.png',
+            image: 'url("images/snowy.png")',
         },
         Drizzle: {
             gradient: 'linear-gradient(135deg, #6dd5ed, #2193b0)',
+            backgroundImagePath: 'background/drizzle_background.png',
             image: 'url("images/rainy.png")'
         }
     };
 
     const theme = themes[condition] || themes.Clear;
-    document.body.style.background = theme.gradient;
+
+    console.log('Usando condición:', condition);
+    console.log('Tema seleccionado:', theme);
+    console.log('Ruta imagen fondo:', theme.backgroundImagePath);
+
+    if (!theme.backgroundImagePath) {
+    } else {
+        document.body.style.backgroundImage = `url("${theme.backgroundImagePath}")`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundColor = '';
+    }
+    
+
+
+    getComputedStyle(document.body).backgroundImage
+
+    console.log(getComputedStyle(document.body).backgroundImage)
+
+
 
     const backgroundElement = document.getElementById('weather-background');
     backgroundElement.style.backgroundImage = theme.image;
