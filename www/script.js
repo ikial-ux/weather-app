@@ -164,7 +164,6 @@ function clearDisplay() {
     document.getElementById('forecast-container').innerHTML = '';
     document.getElementById('not-found').style.display = 'none';
 
-    // Solo ocultar el fondo, sin cambiar el tema
     const bgElement = document.getElementById('weather-background');
     bgElement.style.display = 'none';
     bgElement.style.backgroundImage = '';

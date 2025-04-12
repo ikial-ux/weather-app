@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "www/script.js",
   "scripts": {
-    "start": "npx live-server www"
+    "start": "npx live-server www",
+    "build": "echo 'Archivos ya están en www/'"
   },
   "dependencies": {
     "@capacitor/android": "^7.2.0",

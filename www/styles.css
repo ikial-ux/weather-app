@@ -2,7 +2,7 @@
   --sunny-gradient: linear-gradient(135deg, #ffd700, #ff8c00);
   --rainy-gradient: linear-gradient(135deg, #141e30, #243b55);
   --cloudy-gradient: linear-gradient(135deg, #bdc3c7, #2c3e50);
-  --snowy-gradient: linear-gradient(135deg,  #e6f4f1, #b9d7ea);
+  --snowy-gradient: linear-gradient(135deg, #e6f4f1, #b9d7ea);
   --default-gradient: var(--sunny-gradient);
 }
 
@@ -357,7 +357,6 @@ body {
   }
 }
 
-/* Contenedor de copos de nieve */
 .snowflakes {
   position: fixed;
   top: 0;
@@ -365,24 +364,19 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  /* Así no interfieren con la interacción de usuario */
   overflow: hidden;
   z-index: 9999;
-  /* Asegura que estén por encima de otros elementos */
 }
 
-/* Estilo básico para los copos de nieve */
 .snowflake {
   position: absolute;
   top: -10%;
-  /* Comienzan fuera de la parte superior */
   color: #fff;
   font-size: 1em;
   user-select: none;
   animation: fall linear infinite;
 }
 
-/* Animación de caída */
 @keyframes fall {
   0% {
     transform: translateY(0) rotate(0deg);
@@ -395,7 +389,6 @@ body {
   }
 }
 
-/* Para generar variedad se pueden usar nth-child; estos son ejemplos */
 .snowflake:nth-child(1) {
   left: 10%;
   animation-duration: 10s;
@@ -431,7 +424,6 @@ body {
   font-size: 1em;
 }
 
-/* Puedes seguir agregando reglas para los demás elementos */
 
 @media (max-width: 480px) {
 
@@ -442,6 +434,11 @@ body {
     border-radius: 0;
     display: flex;
     flex-direction: column;
+  }
+
+  .weather-container h1 {
+    font-size: 1.6rem;
+    line-height: 1.2;
   }
 
   .forecast-container {
