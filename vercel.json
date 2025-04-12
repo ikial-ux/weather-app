@@ -1,37 +1,58 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "www/index.html",
-        "use": "@vercel/static"
-      },
-      {
-        "src": "www/styles.css",
-        "use": "@vercel/static"
-      },
-      {
-        "src": "www/script.js",
-        "use": "@vercel/static"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/styles.css",
-        "dest": "www/styles.css",
-        "headers": {
-          "Content-Type": "text/css"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/weather/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "www/index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "www/styles.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "www/script.js",
+      "use": "@vercel/static"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/weather",
+      "destination": "/api/weather"
+    },
+    {
+      "source": "/styles.css",
+      "destination": "/www/styles.css"
+    },
+    {
+      "source": "/script.js",
+      "destination": "/www/script.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/www/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/weather(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Set-Cookie",
+          "value": "__vercel_live_token=YOUR_TOKEN; Path=/; SameSite=None; Secure; HttpOnly"
         }
-      },
-      {
-        "src": "/script.js",
-        "dest": "www/script.js",
-        "headers": {
-          "Content-Type": "application/javascript"
-        }
-      },
-      {
-        "src": "/(.*)",
-        "dest": "www/index.html"
-      }
-    ]
-  }
+      ]
+    }
+  ]
+}

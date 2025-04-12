@@ -20,7 +20,7 @@ async function getLocationWeather() {
                 reject,
                 {
                     enableHighAccuracy: true,
-                    timeout: 10000,
+                    timeout: 30000,
                     maximumAge: 60000
                 }
             );
@@ -45,29 +45,23 @@ async function getWeather() {
     await fetchWeatherData({ city });
 }
 
+// Cambiar las llamadas fetch para usar encodeURIComponent
 async function fetchWeatherData(params) {
     showLoader();
-    
+
     try {
-        // Cambia estas URLs para que apunten a tu endpoint en Vercel
-        const [currentResponse, forecastResponse] = await Promise.all([
-            fetch(`/api/weather?${new URLSearchParams(params)}`),  // Ahora usa tu proxy
-            fetch(`/api/weather?${new URLSearchParams({ 
-                ...params, 
-                type: 'forecast'  // Parámetro para el pronóstico
-            })}`)
-        ]);
+        const query = new URLSearchParams(params).toString();
+        const response = await fetch(`/api/weather?${query}`);
+        if (!response.ok) throw new Error('API response error');
 
-        const currentData = await currentResponse.json();
-        const forecastData = await forecastResponse.json();
+        const { current, forecast } = await response.json();
 
-        if (currentData.cod === 200 && forecastData.cod === '200') {
-            setWeatherTheme(currentData.weather[0].main);
-            displayWeatherData(currentData);
-            displayForecast(forecastData);
-        } else {
-            throw new Error(currentData.message || forecastData.message);
-        }
+        console.log('Current Data:', current);
+        console.log('Forecast Data:', forecast);
+
+        displayWeatherData(current);
+        displayForecast(forecast);
+
     } catch (error) {
         console.error('Fetch error:', error);
         showError(error.message || 'Failed to fetch weather data');
@@ -75,6 +69,8 @@ async function fetchWeatherData(params) {
         hideLoader();
     }
 }
+
+
 
 function displayWeatherData(data) {
     const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
@@ -97,20 +93,31 @@ function displayForecast(forecastData) {
     const forecastContainer = document.getElementById('forecast-container');
     forecastContainer.innerHTML = '';
 
-    const dailyForecast = forecastData.list.reduce((acc, item) => {
-        const date = new Date(item.dt * 1000).toLocaleDateString();
-        if (!acc[date]) {
-            acc[date] = item;
+    const todayDate = new Date().getDate();
+
+    const dailyForecast = {};
+
+    forecastData.list.forEach(item => {
+        const date = new Date(item.dt * 1000);
+        const day = date.getDate();
+
+        // Skip today
+        if (day === todayDate) return;
+
+        const key = date.toDateString();
+        if (!dailyForecast[key]) {
+            dailyForecast[key] = item;
         }
-        return acc;
-    }, {});
+    });
 
     Object.values(dailyForecast).slice(0, 5).forEach(day => {
         const date = new Date(day.dt * 1000);
         const dayElement = document.createElement('div');
         dayElement.className = 'forecast-card';
         dayElement.innerHTML = `
-            <div class="forecast-day">${date.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+            <div class="forecast-day">
+                ${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+            </div>
             <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png" 
                  alt="${day.weather[0].description}">
             <div class="forecast-temp">${Math.round(day.main.temp)}°C</div>
@@ -119,6 +126,7 @@ function displayForecast(forecastData) {
         forecastContainer.appendChild(dayElement);
     });
 }
+
 
 function handleGeolocationError(error) {
     console.error('Geolocation error:', error);
