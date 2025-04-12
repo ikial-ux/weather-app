@@ -4,3 +4,6 @@
 .env.local
 .node_modules
 .android
+node_modules
+android
+node_modules/
