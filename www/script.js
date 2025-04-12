@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-const API_KEY = "43f9134aeeca5ec6360bff537581c4f6"; // ⬅️ Reemplaza esto con tu clave real
+const API_KEY = "43f9134aeeca5ec6360bff537581c4f6";
 
 async function getLocationWeather() {
     clearDisplay();
@@ -218,4 +218,30 @@ function setWeatherTheme(condition) {
     backgroundElement.style.width = '100%';
     backgroundElement.style.height = '140%';
     backgroundElement.style.opacity = condition === 'Clear' ? '0.4' : '0.6';
+
+    const rainOverlay = document.querySelector('.rain-overlay');
+    if (condition === 'Rain') {
+      createRainDrops(150);  
+      rainOverlay.style.display = 'block';
+    } else {
+      rainOverlay.style.display = 'none';
+    }
 }
+
+function createRainDrops(numDrops = 100) {
+    const rainOverlay = document.querySelector('.rain-overlay');
+    rainOverlay.innerHTML = "";
+  
+    for (let i = 0; i < numDrops; i++) {
+      const drop = document.createElement('div');
+      drop.classList.add('raindrop');
+      
+      drop.style.left = Math.random() * 100 + '%';
+      const duration = Math.random() * 0.5 + 0.5;
+      drop.style.animationDuration = duration + 's';
+      drop.style.animationDelay = Math.random() * 2 + 's';
+      
+      rainOverlay.appendChild(drop);
+    }
+  }
+  
