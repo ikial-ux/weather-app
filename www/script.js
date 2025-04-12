@@ -10,20 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+const API_KEY = "43f9134aeeca5ec6360bff537581c4f6"; // ⬅️ Reemplaza esto con tu clave real
+
 async function getLocationWeather() {
     clearDisplay();
 
     try {
         const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(
-                resolve,
-                reject,
-                {
-                    enableHighAccuracy: true,
-                    timeout: 30000,
-                    maximumAge: 60000
-                }
-            );
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                enableHighAccuracy: true,
+                timeout: 30000,
+                maximumAge: 60000
+            });
         });
 
         const { latitude, longitude } = position.coords;
@@ -42,25 +40,36 @@ async function getWeather() {
         return;
     }
 
-    await fetchWeatherData({ city });
+    await fetchWeatherData({ q: city });
 }
 
-// Cambiar las llamadas fetch para usar encodeURIComponent
 async function fetchWeatherData(params) {
     showLoader();
 
     try {
-        const query = new URLSearchParams(params).toString();
-        const response = await fetch(`/api/weather?${query}`);
-        if (!response.ok) throw new Error('API response error');
+        const query = new URLSearchParams({
+            ...params,
+            appid: API_KEY,
+            units: 'metric'
+        }).toString();
 
-        const { current, forecast } = await response.json();
+        const [currentRes, forecastRes] = await Promise.all([
+            fetch(`https://api.openweathermap.org/data/2.5/weather?${query}`),
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?${query}`)
+        ]);
+
+        if (!currentRes.ok || !forecastRes.ok) throw new Error("API response error");
+
+        const current = await currentRes.json();
+        const forecast = await forecastRes.json();
 
         console.log('Current Data:', current);
         console.log('Forecast Data:', forecast);
 
         displayWeatherData(current);
         displayForecast(forecast);
+
+        document.querySelector('.weather-container').classList.add('expanded');
 
     } catch (error) {
         console.error('Fetch error:', error);
@@ -71,12 +80,10 @@ async function fetchWeatherData(params) {
 }
 
 
-
 function displayWeatherData(data) {
     const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
 
-
-    //setWeatherTheme(data.weather[0].main);
+    setWeatherTheme(data.weather[0].main);
 
     document.getElementById('weather-info').innerHTML = `
         <h3>${data.name}, ${data.sys.country}</h3>
@@ -87,30 +94,32 @@ function displayWeatherData(data) {
         <p>Humidity: ${data.main.humidity}%</p>
         <p>Wind Speed: ${data.wind.speed} m/s</p>
     `;
+    document.getElementById('weather-info').style.display = 'block';
 }
+
 
 function displayForecast(forecastData) {
     const forecastContainer = document.getElementById('forecast-container');
     forecastContainer.innerHTML = '';
 
-    const todayDate = new Date().getDate();
+    const todayISO = new Date().toISOString().split('T')[0];
+    const uniqueDays = new Set();
+    const filteredForecast = [];
 
-    const dailyForecast = {};
-
-    forecastData.list.forEach(item => {
+    for (const item of forecastData.list) {
         const date = new Date(item.dt * 1000);
-        const day = date.getDate();
+        const isoDate = date.toISOString().split('T')[0];
 
-        // Skip today
-        if (day === todayDate) return;
-
-        const key = date.toDateString();
-        if (!dailyForecast[key]) {
-            dailyForecast[key] = item;
+        if (isoDate === todayISO) continue;
+        if (!uniqueDays.has(isoDate)) {
+            uniqueDays.add(isoDate);
+            filteredForecast.push(item);
         }
-    });
 
-    Object.values(dailyForecast).slice(0, 5).forEach(day => {
+        if (filteredForecast.length === 5) break;
+    }
+
+    filteredForecast.forEach(day => {
         const date = new Date(day.dt * 1000);
         const dayElement = document.createElement('div');
         dayElement.className = 'forecast-card';
@@ -125,8 +134,9 @@ function displayForecast(forecastData) {
         `;
         forecastContainer.appendChild(dayElement);
     });
-}
 
+    forecastContainer.style.display = 'flex';
+}
 
 function handleGeolocationError(error) {
     console.error('Geolocation error:', error);
@@ -152,6 +162,9 @@ function clearDisplay() {
     document.getElementById('forecast-container').innerHTML = '';
     document.getElementById('not-found').style.display = 'none';
     document.getElementById('weather-background').style.display = 'none';
+    document.getElementById('weather-info').style.display = 'none';
+    document.getElementById('forecast-container').style.display = 'none';
+    document.querySelector('.weather-container').classList.remove('expanded');
     setWeatherTheme('Clear');
 }
 
@@ -194,7 +207,6 @@ function setWeatherTheme(condition) {
             gradient: 'linear-gradient(135deg, #6dd5ed, #2193b0)',
             image: 'url("images/rainy.png")'
         }
-
     };
 
     const theme = themes[condition] || themes.Clear;
@@ -203,7 +215,7 @@ function setWeatherTheme(condition) {
     const backgroundElement = document.getElementById('weather-background');
     backgroundElement.style.backgroundImage = theme.image;
     backgroundElement.style.display = 'block';
-
-    const bgElement = document.getElementById('weather-background');
-    bgElement.style.opacity = condition === 'Clear' ? '0.4' : '0.6';
+    backgroundElement.style.width = '100%';
+    backgroundElement.style.height = '140%';
+    backgroundElement.style.opacity = condition === 'Clear' ? '0.4' : '0.6';
 }

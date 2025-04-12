@@ -1,27 +1,13 @@
 {
   "name": "weather-app",
   "version": "1.0.0",
-  "main": "script.js",
+  "main": "www/script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cp -r public/* www/ && echo 'Build completado'"
+    "start": "npx live-server www"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ikial-ux/weather-app.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ikial-ux/weather-app/issues"
-  },
-  "homepage": "https://github.com/ikial-ux/weather-app#readme",
-  "description": "",
   "dependencies": {
     "@capacitor/android": "^7.2.0",
     "@capacitor/cli": "^7.2.0",
-    "@capacitor/core": "^7.2.0",
-    "next": "^15.3.0"
+    "@capacitor/core": "^7.2.0"
   }
 }
