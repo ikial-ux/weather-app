@@ -1,39 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/weather/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "www/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "www/styles.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "www/script.js",
-      "use": "@vercel/static"
-    }
-  ],
+  "public": true,
   "rewrites": [
     {
-      "source": "/api/weather",
-      "destination": "/api/weather"
-    },
-    {
-      "source": "/styles.css",
-      "destination": "/www/styles.css"
-    },
-    {
-      "source": "/script.js",
-      "destination": "/www/script.js"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/www/index.html"
+      "destination": "/index.html"
     }
   ]
 }
